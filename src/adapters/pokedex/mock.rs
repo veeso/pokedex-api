@@ -5,11 +5,11 @@ use crate::model::Pokemon;
 ///
 /// It simulates fetching Pokémon data without making actual network requests.
 /// It always returns the data for a predefined [`Pokemon`].
-pub struct MockPokedexAdapter(Pokemon);
+pub struct MockPokedexAdapter(Option<Pokemon>);
 
 impl From<Pokemon> for MockPokedexAdapter {
     fn from(pokemon: Pokemon) -> Self {
-        MockPokedexAdapter(pokemon)
+        MockPokedexAdapter(Some(pokemon))
     }
 }
 
@@ -18,11 +18,19 @@ impl MockPokedexAdapter {
     pub fn new(pokemon: Pokemon) -> Self {
         pokemon.into()
     }
+
+    /// Creates a new instance of the [`MockPokedexAdapter`] which simulates a "not found" scenario.
+    pub fn not_found() -> Self {
+        Self(None)
+    }
 }
 
 impl PokedexAdapter for MockPokedexAdapter {
     async fn fetch_pokemon_by_name(&self, _name: &str) -> PokedexAdapterResult<Pokemon> {
-        Ok(self.0.clone())
+        match &self.0 {
+            Some(pokemon) => Ok(pokemon.clone()),
+            None => Err(crate::adapters::pokedex::PokedexAdapterError::NotFound),
+        }
     }
 }
 
@@ -42,7 +50,7 @@ mod tests {
 
         let adapter = MockPokedexAdapter::new(mocked_pokemon.clone());
 
-        assert_eq!(adapter.0, mocked_pokemon);
+        assert_eq!(adapter.0, Some(mocked_pokemon));
     }
 
     #[test]
@@ -56,7 +64,7 @@ mod tests {
 
         let adapter: MockPokedexAdapter = mocked_pokemon.clone().into();
 
-        assert_eq!(adapter.0, mocked_pokemon);
+        assert_eq!(adapter.0, Some(mocked_pokemon));
     }
 
     #[tokio::test]
@@ -73,5 +81,17 @@ mod tests {
         let fetched_pokemon = adapter.fetch_pokemon_by_name("Pikachu").await.unwrap();
 
         assert_eq!(fetched_pokemon, mocked_pokemon);
+    }
+
+    #[tokio::test]
+    async fn test_should_fetch_not_found() {
+        let adapter = MockPokedexAdapter::not_found();
+
+        let fetched_pokemon = adapter.fetch_pokemon_by_name("Pikachu").await;
+
+        assert!(matches!(
+            fetched_pokemon,
+            Err(crate::adapters::pokedex::PokedexAdapterError::NotFound)
+        ));
     }
 }

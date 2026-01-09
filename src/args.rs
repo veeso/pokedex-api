@@ -9,6 +9,12 @@ pub use self::log_level::LogLevel;
 /// pokedex-api is a web server for accessing Pokémon data.
 #[derive(argh::FromArgs, Debug)]
 pub struct Args {
+    /// adapter timeout in seconds [default: 30]
+    #[argh(option, default = "30")]
+    pub adapter_timeout_secs: u64,
+    /// bind address for the web server [default: 127.0.0.1]
+    #[argh(option, short = 'b', default = "String::from(\"127.0.0.1\")")]
+    pub bind_address: String,
     /// fun translation custom endpoint URL [default: https://api.funtranslations.com/]
     #[argh(option)]
     pub funtranslation_endpoint: Option<String>,

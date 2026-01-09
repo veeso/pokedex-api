@@ -87,6 +87,10 @@ impl PokedexAdapter for PokeApiAdapter {
             .await
             .map_err(|err| PokedexAdapterError::NetworkError(err.to_string()))?;
 
+        if response.status() == reqwest::StatusCode::NOT_FOUND {
+            error!("Pokémon '{name}' not found");
+            return Err(PokedexAdapterError::NotFound);
+        }
         if !response.status().is_success() {
             error!(
                 "Failed to fetch Pokémon '{name}': HTTP {status}",
@@ -202,7 +206,7 @@ mod tests {
             .await
             .unwrap_err();
         assert!(
-            matches!(result, PokedexAdapterError::UnexpectedResponse(_)),
+            matches!(result, PokedexAdapterError::NotFound),
             "expected UnexpectedResponse error, got {result:?}"
         );
     }

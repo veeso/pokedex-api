@@ -153,25 +153,26 @@ mod tests {
     }
 
     #[tokio::test]
+    #[ignore] // Ignored to avoid hitting the real API during tests
     async fn test_should_translate_into_yoda() {
         let adapter = FunTranslationsAdapter::default();
         let text = "You must unlearn what you have learned.";
         let translated = adapter.translate_into_yoda(text).await;
-        assert!(translated.is_ok());
-        let translated_text = translated.unwrap();
-        assert_eq!(translated_text, "Learned,  you must unlearn what you have.");
+        assert_eq!(
+            translated,
+            Ok("Learned,  you must unlearn what you have.".to_string())
+        );
     }
 
     #[tokio::test]
+    #[ignore] // Ignored to avoid hitting the real API during tests
     async fn test_should_translate_into_shakespeare() {
         let adapter = FunTranslationsAdapter::default();
         let text = "To be, or not to be, that is the question.";
         let translated = adapter.translate_into_shakespeare(text).await;
-        assert!(translated.is_ok());
-        let translated_text = translated.unwrap();
         assert_eq!(
-            translated_text,
-            "To beest,  or not to beest,  yond is the question."
+            translated,
+            Ok("To beest,  or not to beest,  yond is the question.".to_string())
         );
     }
 }

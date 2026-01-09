@@ -7,13 +7,12 @@ mod mock;
 pub use self::fun_translations::FunTranslationsAdapter;
 #[cfg(test)]
 pub use self::mock::MockTranslationAdapter;
-use crate::model::Pokemon;
 
 /// Result type for [`TranslationAdapter`] operations
 pub type TranslationAdapterResult<T> = Result<T, TranslationAdapterError>;
 
 /// Errors that can occur while interacting with the [`TranslationAdapter`]
-#[derive(Debug, thiserror::Error)]
+#[derive(Debug, thiserror::Error, Eq, PartialEq)]
 pub enum TranslationAdapterError {
     #[error("Network error: {0}")]
     NetworkError(String),
@@ -26,16 +25,16 @@ pub enum TranslationAdapterError {
 }
 
 /// The `TranslationAdapter` trait defines the interface for translating text into different styles.
-pub trait TranslationAdapter {
+pub trait TranslationAdapter: Send + Sync {
     /// Translates the given text into Shakespearean-style speech.
     fn translate_into_shakespeare(
         &self,
         text: &str,
-    ) -> impl Future<Output = TranslationAdapterResult<String>>;
+    ) -> impl Future<Output = TranslationAdapterResult<String>> + Send;
 
     /// Translates the given text into Yoda-style speech.
     fn translate_into_yoda(
         &self,
         text: &str,
-    ) -> impl Future<Output = TranslationAdapterResult<String>>;
+    ) -> impl Future<Output = TranslationAdapterResult<String>> + Send;
 }
