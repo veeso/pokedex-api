@@ -1,0 +1,24 @@
+//! This module defines the command-line arguments for the pokedex-api application.
+
+mod log_level;
+
+use std::path::PathBuf;
+
+pub use self::log_level::LogLevel;
+
+/// pokedex-api is a web server for accessing Pokémon data.
+#[derive(argh::FromArgs, Debug)]
+pub struct Args {
+    /// the path to the log file [default: log only to stdout]
+    #[argh(option, short = 'L')]
+    pub log_file: Option<PathBuf>,
+    /// apply log filtering to target matching the given string [default: no filtering]
+    #[argh(option)]
+    pub log_filter: Option<String>,
+    /// the log level [default: info]
+    #[argh(option, short = 'l', default = "LogLevel::Info")]
+    pub log_level: LogLevel,
+    /// the port the web server will listen on [default: 5000]
+    #[argh(option, short = 'p', default = "5000")]
+    pub port: u16,
+}
