@@ -75,3 +75,16 @@ fn filter_log_matching_target(metadata: &tracing::Metadata, target: Arc<Option<S
     let target = metadata.target();
     target.starts_with(matching_target)
 }
+
+#[cfg(test)]
+mod tests {
+
+    use super::*;
+
+    #[test]
+    fn test_should_init_log() {
+        init_log(LevelFilter::INFO, None, None);
+        tracing::info!("This is an info log");
+        tracing::debug!("This is a debug log");
+    }
+}
