@@ -82,6 +82,18 @@ async fn test_should_not_get_translated_pokemon_if_unexisting() {
     response.assert_status_not_found();
 }
 
+#[tokio::test]
+async fn test_should_run_webserver() {
+    let app_data = mock_state(None);
+    let web_server = WebServer::new(app_data);
+    let addr = "127.0.0.1:0".parse().unwrap();
+    let server_handle = tokio::spawn(async move {
+        web_server.run(addr).await.unwrap();
+    });
+    tokio::time::sleep(std::time::Duration::from_millis(100)).await;
+    server_handle.abort();
+}
+
 fn test_server() -> TestServer {
     let router = mock_router(Some(Pokemon {
         name: "pikachu".to_string(),
