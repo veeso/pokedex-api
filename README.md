@@ -98,6 +98,55 @@ Returns the Pokémon information with the description translated according to th
 }
 ```
 
+## Analysis and Production considerations
+
+Currently, the application is a simple proof of concept and lacks several features that would be necessary for a
+production-ready service.
+
+Here are some considerations for production deployment.
+
+### Caching on a database
+
+Since the amount of Pokémon is relatively small (less than 1000), it would be beneficial to cache the fetched and
+translated data in a database.
+
+It would be also handy to deliver this application with a binary to populate the database with the initial data.
+
+Given the simplicity of the data model, even sqlite could be a good fit for this purpose.
+
+We may reason on giving the records a TTL to avoid having stale data in the database, but in case there should be
+a background task to refresh the data periodically. So API calls should never cause the application to call the
+external APIs.
+
+### Rate limiting
+
+We should implement rate limiting for users to prevent them from abusing the API, especially since we are relying on
+third-party services that may have their own rate limits.
+
+We could either implement rate limiting based on IP addresses or API keys if we decide to implement an authentication
+mechanism.
+
+### Monitoring and alerting
+
+We should set up a system to track metrics such as request rates, error rates, and response times.
+
+### Single point of failure
+
+Currently, the application relies on two external services: PokeAPI and Fun Translations API.
+
+Even if I implemented adapters to be able to easily swap the services with others, currently there are no other
+services.
+
+Idealistically, we should have at least two services for each external dependency to avoid a single point of failure.
+
+### FunTranslations has a very low rate limit for free usage
+
+I'm quite often being hit by 429 Too Many Requests responses from Fun Translations API.
+
+This issue is currently quite big since it prevents the application from working properly.
+
+The solutions have already been discussed above (caching, single point of failure).
+
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
