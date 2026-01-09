@@ -2,3 +2,4 @@
 //! data sources for fetching pokédex information.
 
 pub mod pokedex;
+pub mod translation;

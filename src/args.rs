@@ -9,6 +9,9 @@ pub use self::log_level::LogLevel;
 /// pokedex-api is a web server for accessing Pokémon data.
 #[derive(argh::FromArgs, Debug)]
 pub struct Args {
+    /// fun translation custom endpoint URL [default: https://api.funtranslations.com/]
+    #[argh(option)]
+    pub funtranslation_endpoint: Option<String>,
     /// the path to the log file [default: log only to stdout]
     #[argh(option, short = 'L')]
     pub log_file: Option<PathBuf>,
