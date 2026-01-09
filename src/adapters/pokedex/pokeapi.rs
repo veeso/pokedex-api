@@ -69,7 +69,11 @@ impl PokeApiAdapter {
 
         Ok(Pokemon {
             name: name.to_string(),
-            description,
+            description: description
+                .replace('\n', " ")
+                .replace("\\f", " ")
+                .trim()
+                .to_string(), // clean up newlines and form feeds
             habitat: species.habitat.map(|habitat| habitat.name),
             is_legendary: species.is_legendary,
         })
