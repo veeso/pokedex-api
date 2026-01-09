@@ -1,7 +1,7 @@
 #[macro_use]
 extern crate tracing;
 
-//mod adapters;
+mod adapters;
 mod args;
 mod log;
 mod model;

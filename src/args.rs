@@ -18,6 +18,9 @@ pub struct Args {
     /// the log level [default: info]
     #[argh(option, short = 'l', default = "LogLevel::Info")]
     pub log_level: LogLevel,
+    /// pokeapi custom endpoint URL [default: https://pokeapi.co/api/v2/]
+    #[argh(option)]
+    pub pokeapi_endpoint: Option<String>,
     /// the port the web server will listen on [default: 5000]
     #[argh(option, short = 'p', default = "5000")]
     pub port: u16,
