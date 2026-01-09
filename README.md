@@ -19,17 +19,84 @@ The description is translated based on the following rules:
 
 ### Setup with Docker
 
-```bash
+The project comes with a Dockerfile for easy setup and deployment.
 
+```bash
+docker build -t pokedex-api .
+docker run --name pokedex-api -p 127.0.0.1:5000:5000 pokedex-api
 ```
 
 ### Setup with Rust
 
-```bash
+Install Rust and Cargo by following the instructions at [rust-lang.org](https://www.rust-lang.org/tools/install).
 
+The build the project and run the server locally:
+
+```bash
+cargo run --release
+```
+
+The server takes the following arguments:
+
+```txt
+Options:
+  --adapter-timeout-secs
+                    adapter timeout in seconds [default: 30]
+  -b, --bind-address
+                    bind address for the web server [default: 127.0.0.1]
+  --funtranslation-endpoint
+                    fun translation custom endpoint URL [default:
+                    https://api.funtranslations.com/]
+  -L, --log-file    the path to the log file [default: log only to stdout]
+  --log-filter      apply log filtering to target matching the given string
+                    [default: no filtering]
+  -l, --log-level   the log level [default: info]
+  --pokeapi-endpoint
+                    pokeapi custom endpoint URL [default:
+                    https://pokeapi.co/api/v2/]
+  -p, --port        the port the web server will listen on [default: 5000]
+  --help, help      display usage information
 ```
 
 ## API Endpoints
+
+### Get Pokemon Information
+
+GET `/pokemon/{name}`
+
+Returns basic information about the specified Pokémon.
+
+```json
+{
+  "name": "miltank",
+  "description": "MILTANK gives over five gallons of milk on a daily basis. Its sweet milk is enjoyed by children and grown-ups alike. People who can’t drink milk turn it into yogurt and eat it instead.",
+  "habitat": "grassland",
+  "isLegendary": false
+}
+```
+
+Where
+
+- `name`: The name of the Pokémon.
+- `description`: A brief description of the Pokémon.
+- `habitat`: The habitat where the Pokémon can be found. Optional: it is provided only for Pokémon that belong to 1st to
+  3rd generation due to being a thing of 3rd gen games.
+- `isLegendary`: A boolean indicating whether the Pokémon is legendary.
+
+### Get translated Pokemon Information
+
+GET `/pokemon/translated/{name}`
+
+Returns the Pokémon information with the description translated according to the rules specified above.
+
+```json
+{
+  "name": "miltank",
+  "description": "...",
+  "habitat": "grassland",
+  "isLegendary": false
+}
+```
 
 ## License
 
