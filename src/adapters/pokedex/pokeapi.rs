@@ -71,7 +71,7 @@ impl PokeApiAdapter {
             name: name.to_string(),
             description: description
                 .replace('\n', " ")
-                .replace("\\f", " ")
+                .replace("\u{000C}", " ")
                 .trim()
                 .to_string(), // clean up newlines and form feeds
             habitat: species.habitat.map(|habitat| habitat.name),
