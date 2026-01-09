@@ -4,7 +4,7 @@ extern crate tracing;
 //mod adapters;
 mod args;
 mod log;
-//mod model;
+mod model;
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
